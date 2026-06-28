@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MAIL MULTIPLY - TroopDark</title>
+<title>MAIL MULTIPLY CYBER PANEL</title>
 
 <style>
 body{
@@ -61,7 +61,7 @@ text-shadow:0 0 5px #00ff88;
 
 .grid{
 display:grid;
-grid-template-columns:1fr 1fr;
+grid-template-columns:1fr 1fr 1fr;
 gap:10px;
 margin-bottom:15px;
 }
@@ -84,7 +84,7 @@ margin-top:4px;
 word-break:break-word;
 }
 
-input {
+input, select {
 background:transparent;
 color:#00ff88;
 border:none;
@@ -185,7 +185,19 @@ gap:10px;
 </div>
 <div class="card">
     <div class="label">AMOUNT TO GENERATE</div>
-    <div class="value"><input type="number" id="number" placeholder="100" min="1"></div>
+    <div class="value"><input type="number" id="number" placeholder="500" min="1" max="10000"></div>
+</div>
+<div class="card">
+    <div class="label">ALIAS TYPE</div>
+    <div class="value">
+        <select id="type">
+            <option value="dev">DEV TERMS</option>
+            <option value="random3">RANDOM 3 LETTERS</option>
+            <option value="random4">RANDOM 4 LETTERS</option>
+            <option value="numbers">NUMBERS</option>
+            <option value="mixed">MIXED</option>
+        </select>
+    </div>
 </div>
 </div>
 
@@ -195,92 +207,22 @@ gap:10px;
 </div>
 
 <div class="output-card hidden" id="outputCard">
-    <div class="label">OUTPUT [+DEV ALIAS] - <span id="count">0</span> EMAILS</div>
+    <div class="label">OUTPUT [+ALIAS] - <span id="count">0</span> EMAILS</div>
     <div id="output"></div>
 </div>
 
 </div>
 
 <script>
-const ALIAS_LIST = [
+// Base de palavras dev pra combinar
+const DEV_WORDS = [
 'dev','api','git','npm','ssh','sql','css','html','json','auth',
 'beta','test','prod','stag','code','root','admin','build','push','pull',
 'fork','repo','main','docs','logs','data','user','login','app','web',
 'vps','cdn','aws','gcp','node','php','ruby','java','go','rust',
 'react','vue','next','nuxt','vite','cli','gui','sdk','env','src',
-'bin','lib','tmp','cache','proxy','token','jwt','oauth','hash','key',
-'debug','deploy','commit','merge','branch','docker','linux','bash','term','vim',
-'http','https','cors','dns','ssl','tcp','udp','ftp','smtp','imap',
-'redis','mongo','nginx','cloud','azure','k8s','helm','yaml','xml','regex',
-'queue','stack','heap','async','await','loop','map','filter','reduce','query'
-'trix','lumo','fyno','jivo','qilo','sovo','drio','gixo','mova','nava',
-'rivo','tevo','vixo','zimo','argo','brin','clio','drix','elio','faro',
-'grio','hivo','invo','juno','krio','livo','myro','nivo','ovio','puro',
-'quro','sivo','tulo','uvio','vano','wrio','xeno','yivo','zilo','adro',
-'brox','civo','davo','erro','fivo','givo','hiro','ivox','jaro','kavo',
-'liro','mivo','nuro','ovox','pavo','qivo','ruxo','saro','tivo','ulvo',
-'vivo','wavo','xivo','yuro','zavo','bivo','cavo','divo','evox','favo',
-'guro','hivo','jivo','kivo','lavo','muro','nivo','orvo','pivo','quvo',
-'rivo','suvo','turo','uvvo','vavo','wivo','xuvo','yavo','zuvo','abro',
-'brio','curo','davo','elvo','firo','gavo','huro','ijvo','kuro','livo',
-'mavo','nuro','opvo','quro','rivo','suvo','tavo','uvro','vavo','wuro',
-'xivo','yavo','zuro','acro','broo','civo','drio','eloo','frio','groo',
-'hivo','ikoo','juro','kivo','lrio','mooo','nivo','opoo','qiro','rooo',
-'sivo','troo','uvio','vooo','wiro','xivo','yroo','zivo','aboo','bivo',
-'cooo','diro','elvo','firo','gloo','hivo','ijoo','kivo','lvoo','mivo',
-'nooo','opvo','qivo','rovo','sloo','tivo','uvoo','viro','wooo','xivo',
-'yivo','zooo','abro','brio','croo','diro','elro','firo','groo','hiro',
-'ijro','kroo','livo','mroo','nivo','opro','qiro','rroo','sivo','troo',
-'uvro','vroo','wiro','xroo','yroo','zroo','abro','biro','croo','diro',
-'eiro','firo','groo','hiro','iroo','jiro','kroo','liro','mroo','niro',
-'opro','qiro','rroo','siro','troo','uvro','viro','wroo','xiro','yroo',
-'ziro','abra','brax','crax','drax','erax','frax','grax','hrax','irax',
-'jrax','krax','lrax','mrax','nrax','orax','prax','qrax','rrax','srax',
-'trax','urax','vrax','wrax','xrax','yrax','zrax','abex','bexo','cexu',
-'dexo','erex','fexo','gexu','hexo','irex','jexo','kexu','lexo','mrex',
-'nexu','orex','pexo','qexu','rexu','sexo','texu','urex','vexo','wexu',
-'xexo','yexu','zexo','abix','bixo','cixo','dixo','erix','fixo','gixo',
-'hixo','irix','jixo','kixo','lixo','mixu','nixo','orix','pixo','qixo',
-'rixo','sixo','tixo','urix','vixo','wixo','xixo','yixo','zixo','abox',
-'boxo','coxu','doxo','erox','foxo','goxu','hoxo','irox','joxo','koxu',
-'loxo','moxo','noxo','orox','poxo','qoxu','roxo','soxo','toxo','urox',
-'voxo','woxu','xoxo','yoxu','zoxo','abux','buxo','cuxo','duxo','erux',
-'fuxo','guxo','huxo','irux','juxo','kuxo','luxo','muxo','nuxo','orux',
-'puxo','quxo','ruxo','suxo','tuxo','urux','vuxo','wuxo','xuxo','yuxo',
-'zuxo','abzy','bazy','cazy','dazy','erzy','fazy','gazy','hazy','irzy',
-'jazy','kazy','lazy','mazy','nazy','orzy','pazy','qazy','razy','sazy',
-'tazy','urzy','vazy','wazy','xazy','yazy','zazy','abko','bako','cako',
-'dako','erko','fako','gako','hako','irko','jako','kako','lako','mako',
-'nako','orko','pako','qako','rako','sako','tako','urko','vako','wako',
-'xako','yako','zako','abmi','bami','cami','dami','ermi','fami','gami',
-'hami','irmi','jami','kami','lami','mami','nami','ormi','pami','qami',
-'rami','sami','tami','urmi','vami','wami','xami','yami','zami','abnu',
-'banu','canu','danu','ernu','fanu','ganu','hanu','irnu','janu','kanu',
-'lanu','manu','nanu','ornu','panu','qanu','ranu','sanu','tanu','urnu',
-'vanu','wanu','xanu','yanu','zanu','abpi','bapi','capi','dapi','erpi',
-'fapi','gapi','hapi','irpi','japi','kapi','lapi','mapi','napi','orpi',
-'papi','qapi','rapi','sapi','tapi','urpi','vapi','wapi','xapi','yapi',
-'zapi','abqi','baqi','caqi','daqi','erqi','faqi','gaqi','haqi','irqi',
-'jaqi','kaqi','laqi','maqi','naqi','orqi','paqi','qaqi','raqi','saqi',
-'taqi','urqi','vaqi','waqi','xaqi','yaqi','zaqi','abri','bari','cari',
-'dari','erri','fari','gari','hari','irri','jari','kari','lari','mari',
-'nari','orri','pari','qari','rari','sari','tari','urri','vari','wari',
-'xari','yari','zari','absi','basi','casi','dasi','ersi','fasi','gasi',
-'hasi','irsi','jasi','kasi','lasi','masi','nasi','orsi','pasi','qasi',
-'rasi','sasi','tasi','ursi','vasi','wasi','xasi','yasi','zasi','abti',
-'bati','cati','dati','erti','fati','gati','hati','irti','jati','kati',
-'lati','mati','nati','orti','pati','qati','rati','sati','tati','urti',
-'vati','wati','xati','yati','zati','abvi','bavi','cavi','davi','ervi',
-'favi','gavi','havi','irvi','javi','kavi','lavi','mavi','navi','orvi',
-'pavi','qavi','ravi','savi','tavi','urvi','vavi','wavi','xavi','yavi',
-'zavi','abxi','baxi','caxi','daxi','erxi','faxi','gaxi','haxi','irxi',
-'jaxi','kaxi','laxi','maxi','naxi','orxi','paxi','qaxi','raxi','saxi',
-'taxi','urxi','vaxi','waxi','xaxi','yaxi','zaxi','abyi','bayi','cayi',
-'dayi','eryi','fayi','gayi','hayi','iryi','jayi','kayi','layi','mayi',
-'nayi','oryi','payi','qayi','rayi','sayi','tayi','uryi','vayi','wayi',
-'xayi','yayi','zayi','abzi','bazi','cazi','dazi','erzi','fazi','gazi',
-'hazi','irzi','jazi','kazi','lazi','mazi','nazi','orzi','pazi','qazi',
-'razi','sazi','tazi','urzi','vazi','wazi','xazi','yazi','zazi'
+'bin','lib','cache','proxy','token','jwt','oauth','hash','key',
+'debug','deploy','commit','merge','branch','docker','linux','bash','term','vim'
 'acbo','bcbo','ccbo','dcbo','ecbo','fcbo','gcbo','hcbo','icbo','jcbo',
 'kcbo','lcbo','mcbo','ncbo','ocbo','pcbo','qcbo','rcbo','scbo','tcbo',
 'ucbo','vcbo','wcbo','xcbo','ycbo','zcbo','adbo','bdbo','cdbo','ddbo',
@@ -363,7 +305,6 @@ const ALIAS_LIST = [
 'main','front','lead','first','elite','prime','brave','bold','strong',
 'power','force','myth','legend','hero','boss','chief','lord','king',
 'top','peak','root','base','core','rock','stone','steel','iron','apex',
-'alpha','bull','cobra','falcon','shark','lynx','tiger','bear','hawk',
 'aero','atom','beam','blip','boom','burn','buzz','cave','chill','clap',
 'click','clip','coin','cool','crack','crew','cube','curl','dawn','deck',
 'deep','demo','dock','door','draw','drop','dual','dust','echo','edge',
@@ -442,11 +383,45 @@ const ALIAS_LIST = [
 'mvyr','nvyr','ovyr','pvyr','qvyr','rvyr','svyr','tvyr','uvyr','vvyr',
 'wvyr','xvyr','yvyr','zvyr','awyr','bwyr','cwyr','dwyr','ewyr','fwyr',
 'gwyr','hwyr','iwyr','jwyr','kwyr','lwyr','mwyr','nwyr','owyr','pwyr',
-'qwyr','rwyr','swyr','twyr','uwyr','vwyr','wwyr','xwyr','ywyr','zwyr',
-'axyr','bxyr'
+'qwyr','rwyr','swyr','twyr','uwyr','vwyr','wwyr','xwyr','ywyr','zwyr'
 ];
 
 let generatedEmails = [];
+
+function randomString(len) {
+    const chars = 'abcdefghijklmnopqrstuvwxyz';
+    let result = '';
+    for(let i = 0; i < len; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}
+
+function generateAlias(type, index) {
+    switch(type) {
+        case 'dev':
+            // Combina 1-2 palavras dev + número
+            const w1 = DEV_WORDS[Math.floor(Math.random() * DEV_WORDS.length)];
+            const w2 = DEV_WORDS[Math.floor(Math.random() * DEV_WORDS.length)];
+            return Math.random() > 0.5 ? w1 + w2 : w1 + Math.floor(Math.random() * 999);
+        
+        case 'random3':
+            return randomString(3);
+        
+        case 'random4':
+            return randomString(4);
+        
+        case 'numbers':
+            return String(index + 1).padStart(4, '0');
+        
+        case 'mixed':
+            const opts = ['dev', 'random3', 'random4'];
+            return generateAlias(opts[Math.floor(Math.random() * opts.length)], index);
+        
+        default:
+            return 'alias' + index;
+    }
+}
 
 document.getElementById('email').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') document.getElementById('number').focus();
@@ -459,6 +434,7 @@ document.getElementById('number').addEventListener('keypress', function(e) {
 function generate() {
     const email = document.getElementById('email').value.trim();
     const number = parseInt(document.getElementById('number').value);
+    const type = document.getElementById('type').value;
     const out = document.getElementById('output');
     
     if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/.test(email)) {
@@ -473,24 +449,46 @@ function generate() {
         return;
     }
     
+    if (number > 10000) {
+        out.innerHTML = '<div class="email-row">[!] Max 10000 emails</div>';
+        document.getElementById('outputCard').classList.remove('hidden');
+        return;
+    }
+    
     const [name, domain] = email.split('@');
-    let finalAlias = ALIAS_LIST.sort(() => Math.random() - 0.5).slice(0, Math.min(number, ALIAS_LIST.length));
-    generatedEmails = finalAlias.map(a => `${name}+${a}@${domain}`);
+    generatedEmails = [];
+    const used = new Set();
     
-    out.innerHTML = '';
-    generatedEmails.forEach((mail, i) => {
-        const row = document.createElement('div');
-        row.className = 'email-row';
-        row.innerHTML = `
-            <span>${mail}</span>
-            <button class="copy-btn" onclick="copySingle(${i}, this)">COPY</button>
-        `;
-        out.appendChild(row);
-    });
+    out.innerHTML = '<div class="email-row">[*] Generating...</div>';
     
-    document.getElementById('count').innerText = generatedEmails.length;
-    document.getElementById('outputCard').classList.remove('hidden');
-    document.getElementById('copyAllBtn').classList.remove('hidden');
+    setTimeout(() => {
+        for(let i = 0; i < number; i++) {
+            let alias;
+            let attempts = 0;
+            do {
+                alias = generateAlias(type, i + attempts);
+                attempts++;
+            } while(used.has(alias) && attempts < 100);
+            
+            used.add(alias);
+            generatedEmails.push(`${name}+${alias}@${domain}`);
+        }
+        
+        out.innerHTML = '';
+        generatedEmails.forEach((mail, i) => {
+            const row = document.createElement('div');
+            row.className = 'email-row';
+            row.innerHTML = `
+                <span>${mail}</span>
+                <button class="copy-btn" onclick="copySingle(${i}, this)">COPY</button>
+            `;
+            out.appendChild(row);
+        });
+        
+        document.getElementById('count').innerText = generatedEmails.length;
+        document.getElementById('outputCard').classList.remove('hidden');
+        document.getElementById('copyAllBtn').classList.remove('hidden');
+    }, 10);
 }
 
 function copySingle(index, btn) {
