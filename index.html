@@ -1,252 +1,282 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<title>TroopDark</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAIL MULTIPLY - TroopDark</title>
 
 <style>
-
-/* =========================
-RESET
-========================= */
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-/* =========================
-FUNDO ESTÁVEL
-========================= */
-
 body{
-  font-family:Arial,sans-serif;
-  color:#fff;
-  min-height:100vh;
-
-  background-image:url("https://files.catbox.moe/ai2gz5.png");
-  background-size:cover;
-  background-position:center;
-  background-repeat:no-repeat;
-
-  position:relative;
-  overflow-x:hidden;
+margin:0;
+background:#000;
+color:#00ff88;
+font-family:monospace;
+display:flex;
+justify-content:center;
+padding:10px;
+overflow-x:hidden;
+min-height:100vh;
 }
 
-/* overlay escuro (não quebra imagem) */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.65);
-  z-index:0;
+.scan{
+position:fixed;
+width:100%;
+height:100%;
+background:linear-gradient(transparent,rgba(0,255,136,0.05),transparent);
+animation:scan 4s linear infinite;
+pointer-events:none;
 }
 
-/* =========================
-CONTEÚDO
-========================= */
-
-.hero{
-  background:rgba(0,0,0,0.6);
-  padding:25px;
-  text-align:center;
-  font-weight:bold;
-  font-size:22px;
-  position:relative;
-  z-index:1;
+@keyframes scan{
+0%{transform:translateY(-100%);}
+100%{transform:translateY(100%);}
 }
 
-.container{
-  padding:15px;
-  position:relative;
-  z-index:1;
+.box{
+width:100%;
+max-width:1200px;
+border:1px solid #00ff88;
+border-radius:12px;
+padding:16px;
+background:rgba(0,0,0,0.9);
+box-shadow:0 0 25px #00ff8840;
+display:flex;
+flex-direction:column;
 }
 
-.title-cat{
-  margin:18px 0 10px;
-  color:#aaa;
-  font-size:13px;
+h1{
+font-size:18px;
+margin-bottom:12px;
+text-shadow:0 0 8px #00ff88;
 }
 
-/* =========================
-CARDS
-========================= */
-
-.cards{
-  display:flex;
-  gap:12px;
-  overflow-x:auto;
-  padding-bottom:5px;
-  -webkit-overflow-scrolling:touch;
+.banner {
+color:#00ff88;
+white-space:pre;
+font-size:10px;
+line-height:1.1;
+margin-bottom:15px;
+text-shadow:0 0 5px #00ff88;
 }
 
-.cards::-webkit-scrollbar{
-  height:4px;
-}
-
-.cards::-webkit-scrollbar-thumb{
-  background:#333;
-  border-radius:20px;
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-bottom:15px;
 }
 
 .card{
-  min-width:160px;
-  max-width:160px;
-  background:#1e1e1e;
-  border-radius:12px;
-  overflow:hidden;
-  flex-shrink:0;
+border:1px solid #00ff88;
+border-radius:8px;
+padding:10px;
+background:rgba(0,255,136,0.05);
 }
 
-.card img{
-  width:100%;
-  height:150px;
-  object-fit:cover;
-  background:#111;
+.label{
+font-size:11px;
+opacity:.7;
 }
 
-.info{
-  padding:10px;
+.value{
+font-size:13px;
+margin-top:4px;
+word-break:break-word;
 }
 
-.nome{
-  font-size:13px;
-  font-weight:bold;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+input {
+background:transparent;
+color:#00ff88;
+border:none;
+outline:none;
+font-family:monospace;
+font-size:13px;
+width:100%;
 }
 
-.tipo{
-  font-size:11px;
-  color:#aaa;
-  margin:6px 0;
+button {
+background:rgba(0,255,136,0.1);
+color:#00ff88;
+border:1px solid #00ff88;
+border-radius:8px;
+padding:8px 15px;
+font-family:monospace;
+cursor:pointer;
+margin-top:10px;
+text-shadow:0 0 5px #00ff88;
+}
+button:hover {
+background:rgba(0,255,136,0.2);
+box-shadow:0 0 10px #00ff8840;
 }
 
-.btn{
-  display:block;
-  text-align:center;
-  text-decoration:none;
-  background:#25D366;
-  color:#fff;
-  padding:8px;
-  border-radius:7px;
-  font-size:12px;
-  font-weight:bold;
+.output-card {
+border:1px solid #00ff88;
+border-radius:8px;
+padding:10px;
+background:rgba(0,255,136,0.05);
+flex:1;
+overflow-y:auto;
+margin-top:10px;
 }
 
+.email-row {
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:6px 8px;
+margin:3px 0;
+background:rgba(0,255,136,0.03);
+border:1px solid rgba(0,255,136,0.2);
+border-radius:4px;
+font-size:12px;
+}
+
+.email-row:hover {
+background:rgba(0,255,136,0.08);
+}
+
+.copy-btn {
+background:rgba(0,255,136,0.15);
+border:1px solid #00ff88;
+color:#00ff88;
+padding:3px 8px;
+font-size:10px;
+border-radius:4px;
+cursor:pointer;
+margin:0;
+text-shadow:none;
+}
+.copy-btn:hover {
+background:rgba(0,255,136,0.3);
+}
+
+.controls {
+display:flex;
+gap:10px;
+}
+
+.hidden { display:none; }
 </style>
 </head>
 
 <body>
 
-<div class="hero">TROOPDARK</div>
+<div class="scan"></div>
 
-<div class="container">
+<div class="box">
 
-  <div class="title-cat">GRUPO PRINCIPAL</div>
-  <div class="cards" id="grupoPrincipal"></div>
+<h1>▣ MAIL MULTIPLY DASHBOARD</h1>
 
-  <div class="title-cat">CANAL PRINCIPAL</div>
-  <div class="cards" id="canalPrincipal"></div>
+<div class="banner"> __  __       _ _   __  __       _ _   _       _       
+|  \/  |     (_) | |  \/  |     | | | (_)     | |      
+| \  / | __ _ _| | | \  / |_   _| | |_ _ _ __ | |_   _ 
+| |\/| |/ _` | | | | |\/| | | | | | __| | '_ \| | | | |
+| |  | | (_| | | | | |  | | |_| | | |_| | |_) | | |_| |
+|_|  |_|\__,_|_|_| |_|  |_|\__,_|_|\__|_| .__/|_|\__, |
+                                        | |       __/ |
+     Hola! Create Unlimited Gmails      |_|      |___/ 
+</div>
 
-  <div class="title-cat">GRUPOS PARCEIROS</div>
-  <div class="cards" id="gruposParceiros"></div>
+<div class="grid">
+<div class="card">
+    <div class="label">EMAIL ADDRESS</div>
+    <div class="value"><input type="text" id="email" placeholder="seuemail@gmail.com" autofocus></div>
+</div>
+<div class="card">
+    <div class="label">AMOUNT TO GENERATE</div>
+    <div class="value"><input type="number" id="number" placeholder="50" min="1"></div>
+</div>
+</div>
 
-  <div class="title-cat">CANAIS PARCEIROS</div>
-  <div class="cards" id="canaisParceiros"></div>
+<div class="controls">
+<button onclick="generate()">EXECUTE GENERATION</button>
+<button onclick="copyAll()" id="copyAllBtn" class="hidden">COPY ALL</button>
+</div>
+
+<div class="output-card hidden" id="outputCard">
+    <div class="label">OUTPUT [+DEV ALIAS] - <span id="count">0</span> EMAILS</div>
+    <div id="output"></div>
+</div>
 
 </div>
 
 <script>
-
-const IMG_PADRAO =
-"https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg";
-
-/* =========================
-DADOS
-========================= */
-
-const grupoPrincipal = {
-  nome: "TroopDark ᵗᵈᵏ",
-  foto: "https://files.catbox.moe/lcl4vw.png",
-  link: "https://chat.whatsapp.com/LBQmatzACkd7T71mcMB5hM"
-};
-
-const canalPrincipal = {
-  nome: "TroopDark ᵗᵈᵏ #Channel",
-  foto: "https://files.catbox.moe/lcl4vw.png",
-  link: "https://whatsapp.com/channel/0029Vb7ZerTBqbr5oNdmst01"
-};
-
-const gruposParceiros = [
-  {
-    nome: "Sem Grupo",
-    foto: "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg",
-    link: "https://chat.whatsapp.com/LINK1"
-  },
-  {
-    nome: "Sem Grupo",
-    foto: "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg",
-    link: "https://chat.whatsapp.com/LINK1"
-  }
+const ALIAS_LIST = [
+'dev','api','git','npm','ssh','sql','css','html','json','auth',
+'beta','test','prod','stag','code','root','admin','build','push','pull',
+'fork','repo','main','docs','logs','data','user','login','app','web',
+'vps','cdn','aws','gcp','node','php','ruby','java','go','rust',
+'react','vue','next','nuxt','vite','cli','gui','sdk','env','src',
+'bin','lib','tmp','cache','proxy','token','jwt','oauth','hash','key',
+'debug','deploy','commit','merge','branch','docker','linux','bash','term','vim',
+'http','https','cors','dns','ssl','tcp','udp','ftp','smtp','imap',
+'redis','mongo','nginx','cloud','azure','k8s','helm','yaml','xml','regex',
+'queue','stack','heap','async','await','loop','map','filter','reduce','query'
 ];
 
-const canaisParceiros = [
-  {
-    nome: "Aliança AMT Channel #⁰⁰⁷🇰🇷",
-    foto: "https://files.catbox.moe/o5eb0u.png",
-    link: "https://whatsapp.com/channel/0029VbCZdnDJP21Amqx92B2z"
-  },
-  {
-    nome: "Sem Channel",
-    foto: "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg",
-    link: "https://chat.whatsapp.com/LINK2"
-  }
-];
+let generatedEmails = [];
 
-/* =========================
-CARD
-========================= */
+document.getElementById('email').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') document.getElementById('number').focus();
+});
 
-function card(item, tipo){
-  return `
-  <div class="card">
-    <img src="${item.foto || IMG_PADRAO}"
-         onerror="this.src='${IMG_PADRAO}'">
-    <div class="info">
-      <div class="nome">${item.nome}</div>
-      <div class="tipo">${tipo}</div>
-      <a class="btn" href="${item.link}" target="_blank">Entrar</a>
-    </div>
-  </div>
-  `;
+document.getElementById('number').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') generate();
+});
+
+function generate() {
+    const email = document.getElementById('email').value.trim();
+    const number = parseInt(document.getElementById('number').value);
+    const out = document.getElementById('output');
+    
+    if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/.test(email)) {
+        out.innerHTML = '<div class="email-row">[!] Invalid email address</div>';
+        document.getElementById('outputCard').classList.remove('hidden');
+        return;
+    }
+    
+    if (!number || number < 1) {
+        out.innerHTML = '<div class="email-row">[!] Invalid amount</div>';
+        document.getElementById('outputCard').classList.remove('hidden');
+        return;
+    }
+    
+    const [name, domain] = email.split('@');
+    let finalAlias = ALIAS_LIST.sort(() => Math.random() - 0.5).slice(0, Math.min(number, ALIAS_LIST.length));
+    generatedEmails = finalAlias.map(a => `${name}+${a}@${domain}`);
+    
+    out.innerHTML = '';
+    generatedEmails.forEach((mail, i) => {
+        const row = document.createElement('div');
+        row.className = 'email-row';
+        row.innerHTML = `
+            <span>${mail}</span>
+            <button class="copy-btn" onclick="copySingle(${i}, this)">COPY</button>
+        `;
+        out.appendChild(row);
+    });
+    
+    document.getElementById('count').innerText = generatedEmails.length;
+    document.getElementById('outputCard').classList.remove('hidden');
+    document.getElementById('copyAllBtn').classList.remove('hidden');
 }
 
-/* =========================
-RENDER
-========================= */
-
-function render(){
-
-  document.getElementById("grupoPrincipal").innerHTML =
-    card(grupoPrincipal, "Grupo");
-
-  document.getElementById("canalPrincipal").innerHTML =
-    card(canalPrincipal, "Canal");
-
-  document.getElementById("gruposParceiros").innerHTML =
-    gruposParceiros.map(g => card(g, "Grupo Parceiro")).join("");
-
-  document.getElementById("canaisParceiros").innerHTML =
-    canaisParceiros.map(c => card(c, "Canal Parceiro")).join("");
+function copySingle(index, btn) {
+    navigator.clipboard.writeText(generatedEmails[index]).then(() => {
+        const old = btn.innerText;
+        btn.innerText = 'COPIED';
+        setTimeout(() => btn.innerText = old, 1000);
+    });
 }
 
-document.addEventListener("DOMContentLoaded", render);
-
+function copyAll() {
+    navigator.clipboard.writeText(generatedEmails.join('\n')).then(() => {
+        const btn = document.getElementById('copyAllBtn');
+        btn.innerText = 'ALL COPIED!';
+        setTimeout(() => btn.innerText = 'COPY ALL', 1500);
+    });
+}
 </script>
 
 </body>
