@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAIL MULTIPLY CYBER PANEL</title>
+
+<style>
+body{
+margin:0;
+background:#000;
+color:#00ff88;
+font-family:monospace;
+display:flex;
+justify-content:center;
+padding:10px;
+overflow-x:hidden;
+min-height:100vh;
+}
+
+.scan{
+position:fixed;
+width:100%;
+height:100%;
+background:linear-gradient(transparent,rgba(0,255,136,0.05),transparent);
+animation:scan 4s linear infinite;
+pointer-events:none;
+}
+
+@keyframes scan{
+0%{transform:translateY(-100%);}
+100%{transform:translateY(100%);}
+}
+
+.box{
+width:100%;
+max-width:1200px;
+border:1px solid #00ff88;
+border-radius:12px;
+padding:16px;
+background:rgba(0,0,0,0.9);
+box-shadow:0 0 25px #00ff8840;
+display:flex;
+flex-direction:column;
+}
+
+h1{
+font-size:18px;
+margin-bottom:12px;
+text-shadow:0 0 8px #00ff88;
+}
+
+.banner {
+color:#00ff88;
+white-space:pre;
+font-size:10px;
+line-height:1.1;
+margin-bottom:15px;
+text-shadow:0 0 5px #00ff88;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-bottom:15px;
+}
+
+.card{
+border:1px solid #00ff88;
+border-radius:8px;
+padding:10px;
+background:rgba(0,255,136,0.05);
+}
+
+.label{
+font-size:11px;
+opacity:.7;
+}
+
+.value{
+font-size:13px;
+margin-top:4px;
+word-break:break-word;
+}
+
+input {
+background:transparent;
+color:#00ff88;
+border:none;
+outline:none;
+font-family:monospace;
+font-size:13px;
+width:100%;
+}
+
+button {
+background:rgba(0,255,136,0.1);
+color:#00ff88;
+border:1px solid #00ff88;
+border-radius:8px;
+padding:8px 15px;
+font-family:monospace;
+cursor:pointer;
+margin-top:10px;
+text-shadow:0 0 5px #00ff88;
+}
+button:hover {
+background:rgba(0,255,136,0.2);
+box-shadow:0 0 10px #00ff8840;
+}
+
+.output-card {
+border:1px solid #00ff88;
+border-radius:8px;
+padding:10px;
+background:rgba(0,255,136,0.05);
+flex:1;
+overflow-y:auto;
+margin-top:10px;
+}
+
+.email-row {
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:6px 8px;
+margin:3px 0;
+background:rgba(0,255,136,0.03);
+border:1px solid rgba(0,255,136,0.2);
+border-radius:4px;
+font-size:12px;
+}
+
+.email-row:hover {
+background:rgba(0,255,136,0.08);
+}
+
+.copy-btn {
+background:rgba(0,255,136,0.15);
+border:1px solid #00ff88;
+color:#00ff88;
+padding:3px 8px;
+font-size:10px;
+border-radius:4px;
+cursor:pointer;
+margin:0;
+text-shadow:none;
+}
+.copy-btn:hover {
+background:rgba(0,255,136,0.3);
+}
+
+.controls {
+display:flex;
+gap:10px;
+}
+
+.hidden { display:none; }
+</style>
+</head>
+
+<body>
+
+<div class="scan"></div>
+
+<div class="box">
+
+<h1>▣ MAIL MULTIPLY DASHBOARD</h1>
+
+<div class="banner"> __ __ _ _ __ __ _ _ _ _
+| \/ | (_) | | \/ | | | | (_) | |
+| \ / | __ _ _| | | \ / |_ _| | |_ _ _ __ | |_ _
+| |\/| |/ _` | | | | |\/| | | | | | __| | '_ \| | | | |
+| | | | (_| | | | | | | | |_| | | |_| | |_) | | |_| |
+|_| |_|\__,_|_|_| |_| |_|\__,_|_|\__|_|.__/|_|\__, |
+                                        | | __/ |
+     Hola! Create Unlimited Gmails |_| |___/
+</div>
+
+<div class="grid">
+<div class="card">
+    <div class="label">EMAIL ADDRESS</div>
+    <div class="value"><input type="text" id="email" placeholder="seuemail@gmail.com" autofocus></div>
+</div>
+<div class="card">
+    <div class="label">AMOUNT TO GENERATE [MAX 10000]</div>
+    <div class="value"><input type="number" id="number" placeholder="2000" min="1" max="10000"></div>
+</div>
+</div>
+
+<div class="controls">
+<button onclick="generate()">EXECUTE GENERATION</button>
+<button onclick="copyAll()" id="copyAllBtn" class="hidden">COPY ALL</button>
+</div>
+
+<div class="output-card hidden" id="outputCard">
+    <div class="label">OUTPUT [+ALIAS] - <span id="count">0</span> EMAILS</div>
+    <div id="output"></div>
+</div>
+
+</div>
+
+<script>
+const BASE_WORDS = ['aero','atom','beam','blip','boom','burn','buzz','cave','chill','clap','click','clip','coin','cool','crack','crew','cube','curl','dawn','deck','deep','demo','dock','door','draw','drop','dual','dust','echo','edge','edit','emit','enum','exit','fame','farm','fate','feed','fend','film','fire','fish','flat','flip','foam','fold','font','food','foot','form','free','fuel','full','gain','game','gate','gear','germ','glow','glue','goal','grab','gray','gulf','hair','hall','hand','hang','hard','haze','head','heat','heel','hide','hill','hint','hire','hold','hole','home','hook','hope','horn','host','hour','hunt','icon','idea','item','join','jump','junk','keep','kick','kill','kind','kiss','kite','land','last','lazy','lift','light','line','list','live','load','lock','long','look','loop','loud','love','luck','lush','main','make','mark','mask','mass','mate','mean','meet','menu','meta','mint','miss','mist','mode','moon','more','moss','most','move','much','must','name','navy','near','neat','need','nest','news','next','nice','nine','node','none','nose','note','noun','nova','now','null','open','over','pack','page','pair','palm','park','part','pass','past','path','peak','pen','pink','plan','play','plot','plug','plus','pole','poll','pond','pool','port','post','pour','prep','prod','pull','pump','push','quit','rain','rank','rate','read','real','rear','redo','rest','rice','rich','ride','ring','risk','road','rock','role','room','root','rope','rose','rule','run','rush','safe','sail','salt','same','sand','save','scan','scar','seal','seat','seed','sell','send','sexy','ship','shop','shot','show','side','sign','silk','sing','sink','site','size','skin','skip','slim','slip','slow','snap','snow','soft','soil','sold','sole','song','sort','soul','soup','star','stay','step','stop','suit','sum','sure','swim','take','talk','tall','task','team','tear','tell','term','test','text','thin','time','tiny','tire','tone','tool','top','tour','town','track','trade','tree','trim','trip','true','tube','turn','type','unit','up','user','vast','verb','very','view','visa','vote','wake','walk','wall','want','warm','wash','wave','wear','week','well','west','wide','win','wind','wire','wise','wish','with','wolf','wood','word','work','yard','year','yes','yet','yoga','zero','zone','zoom','zulu','dev','api','git','npm','ssh','sql','css','html','json','auth','beta','test','prod','stag','code','root','admin','build','push','pull','fork','repo','main','docs','logs','data','user','login','app','web','vps','cdn','aws','gcp','node','php','ruby','java','go','rust','react','vue','next','nuxt','vite','cli','gui','sdk','env','src','bin','lib','cache','proxy','token','jwt','oauth','hash','key','debug','deploy','commit','merge','branch','docker','linux','bash','term','vim'];
+
+let generatedEmails = [];
+
+document.getElementById('email').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') document.getElementById('number').focus();
+});
+
+document.getElementById('number').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') generate();
+});
+
+function generate() {
+    const email = document.getElementById('email').value.trim();
+    const number = parseInt(document.getElementById('number').value);
+    const out = document.getElementById('output');
+
+    if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/.test(email)) {
+        out.innerHTML = '<div class="email-row">[!] Invalid email address</div>';
+        document.getElementById('outputCard').classList.remove('hidden');
+        return;
+    }
+
+    if (!number || number < 1) {
+        out.innerHTML = '<div class="email-row">[!] Invalid amount</div>';
+        document.getElementById('outputCard').classList.remove('hidden');
+        return;
+    }
+
+    if (number > 10000) {
+        out.innerHTML = '<div class="email-row">[!] Max 10000 emails</div>';
+        document.getElementById('outputCard').classList.remove('hidden');
+        return;
+    }
+
+    const [name, domain] = email.split('@');
+
+    out.innerHTML = '<div class="email-row">[*] Generating ' + number + ' emails...</div>';
+    document.getElementById('outputCard').classList.remove('hidden');
+    document.getElementById('copyAllBtn').classList.add('hidden');
+
+    setTimeout(() => {
+        generatedEmails = [];
+
+        for(let i = 0; i < number; i++) {
+            const w1 = BASE_WORDS[Math.floor(Math.random() * BASE_WORDS.length)];
+            const w2 = BASE_WORDS[Math.floor(Math.random() * BASE_WORDS.length)];
+            const num = Math.floor(Math.random() * 99999);
+
+            // Gera 4 padrões diferentes pra garantir único
+            let alias;
+            const pattern = i % 4;
+            if(pattern === 0) alias = w1 + num;
+            else if(pattern === 1) alias = w1 + w2;
+            else if(pattern === 2) alias = w1 + w2 + num;
+            else alias = w1 + '_' + num;
+
+            generatedEmails.push(`${name}+${alias}@${domain}`);
+        }
+
+        // Renderiza em chunks pra não travar
+        out.innerHTML = '';
+        let html = '';
+        generatedEmails.forEach((mail, i) => {
+            html += `<div class="email-row"><span>${mail}</span><button class="copy-btn" onclick="copySingle(${i}, this)">COPY</button></div>`;
+        });
+        out.innerHTML = html;
+
+        document.getElementById('count').innerText = generatedEmails.length;
+        document.getElementById('copyAllBtn').classList.remove('hidden');
+    }, 50);
+}
+
+function copySingle(index, btn) {
+    navigator.clipboard.writeText(generatedEmails[index]).then(() => {
+        const old = btn.innerText;
+        btn.innerText = 'COPIED';
+        setTimeout(() => btn.innerText = old, 1000);
+    });
+}
+
+function copyAll() {
+    navigator.clipboard.writeText(generatedEmails.join('\n')).then(() => {
+        const btn = document.getElementById('copyAllBtn');
+        btn.innerText = 'ALL COPIED!';
+        setTimeout(() => btn.innerText = 'COPY ALL', 1500);
+    });
+}
+</script>
+
+</body>
+</html>
