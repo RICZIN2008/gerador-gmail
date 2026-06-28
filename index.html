@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAIL MULTIPLY - TroopDark</title>
+
+<style>
+body{
+margin:0;
+background:#000;
+color:#00ff88;
+font-family:monospace;
+display:flex;
+justify-content:center;
+padding:10px;
+overflow-x:hidden;
+min-height:100vh;
+}
+
+.scan{
+position:fixed;
+width:100%;
+height:100%;
+background:linear-gradient(transparent,rgba(0,255,136,0.05),transparent);
+animation:scan 4s linear infinite;
+pointer-events:none;
+}
+
+@keyframes scan{
+0%{transform:translateY(-100%);}
+100%{transform:translateY(100%);}
+}
+
+.box{
+width:100%;
+max-width:1200px;
+border:1px solid #00ff88;
+border-radius:12px;
+padding:16px;
+background:rgba(0,0,0,0.9);
+box-shadow:0 0 25px #00ff8840;
+display:flex;
+flex-direction:column;
+}
+
+h1{
+font-size:18px;
+margin-bottom:12px;
+text-shadow:0 0 8px #00ff88;
+}
+
+.banner {
+color:#00ff88;
+white-space:pre;
+font-size:10px;
+line-height:1.1;
+margin-bottom:15px;
+text-shadow:0 0 5px #00ff88;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-bottom:15px;
+}
+
+.card{
+border:1px solid #00ff88;
+border-radius:8px;
+padding:10px;
+background:rgba(0,255,136,0.05);
+}
+
+.label{
+font-size:11px;
+opacity:.7;
+}
+
+.value{
+font-size:13px;
+margin-top:4px;
+word-break:break-word;
+}
+
+input {
+background:transparent;
+color:#00ff88;
+border:none;
+outline:none;
+font-family:monospace;
+font-size:13px;
+width:100%;
+}
+
+button {
+background:rgba(0,255,136,0.1);
+color:#00ff88;
+border:1px solid #00ff88;
+border-radius:8px;
+padding:8px 15px;
+font-family:monospace;
+cursor:pointer;
+margin-top:10px;
+text-shadow:0 0 5px #00ff88;
+}
+button:hover {
+background:rgba(0,255,136,0.2);
+box-shadow:0 0 10px #00ff8840;
+}
+
+.output-card {
+border:1px solid #00ff88;
+border-radius:8px;
+padding:10px;
+background:rgba(0,255,136,0.05);
+flex:1;
+overflow-y:auto;
+margin-top:10px;
+}
+
+.email-row {
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:6px 8px;
+margin:3px 0;
+background:rgba(0,255,136,0.03);
+border:1px solid rgba(0,255,136,0.2);
+border-radius:4px;
+font-size:12px;
+}
+
+.email-row:hover {
+background:rgba(0,255,136,0.08);
+}
+
+.copy-btn {
+background:rgba(0,255,136,0.15);
+border:1px solid #00ff88;
+color:#00ff88;
+padding:3px 8px;
+font-size:10px;
+border-radius:4px;
+cursor:pointer;
+margin:0;
+text-shadow:none;
+}
+.copy-btn:hover {
+background:rgba(0,255,136,0.3);
+}
+
+.controls {
+display:flex;
+gap:10px;
+}
+
+.hidden { display:none; }
+</style>
+</head>
+
+<body>
+
+<div class="scan"></div>
+
+<div class="box">
+
+<h1>▣ MAIL MULTIPLY DASHBOARD</h1>
+
+<div class="banner"> __  __       _ _   __  __       _ _   _       _       
+|  \/  |     (_) | |  \/  |     | | | (_)     | |      
+| \  / | __ _ _| | | \  / |_   _| | |_ _ _ __ | |_   _ 
+| |\/| |/ _` | | | | |\/| | | | | | __| | '_ \| | | | |
+| |  | | (_| | | | | |  | | |_| | | |_| | |_) | | |_| |
+|_|  |_|\__,_|_|_| |_|  |_|\__,_|_|\__|_| .__/|_|\__, |
+                                        | |       __/ |
+     Hola! Create Unlimited Gmails      |_|      |___/ 
+</div>
+
+<div class="grid">
+<div class="card">
+    <div class="label">EMAIL ADDRESS</div>
+    <div class="value"><input type="text" id="email" placeholder="seuemail@gmail.com" autofocus></div>
+</div>
+<div class="card">
+    <div class="label">AMOUNT TO GENERATE</div>
+    <div class="value"><input type="number" id="number" placeholder="100" min="1"></div>
+</div>
+</div>
+
+<div class="controls">
+<button onclick="generate()">EXECUTE GENERATION</button>
+<button onclick="copyAll()" id="copyAllBtn" class="hidden">COPY ALL</button>
+</div>
+
+<div class="output-card hidden" id="outputCard">
+    <div class="label">OUTPUT [+DEV ALIAS] - <span id="count">0</span> EMAILS</div>
+    <div id="output"></div>
+</div>
+
+</div>
+
+<script>
+const ALIAS_LIST = [
+'dev','api','git','npm','ssh','sql','css','html','json','auth',
+'beta','test','prod','stag','code','root','admin','build','push','pull',
+'fork','repo','main','docs','logs','data','user','login','app','web',
+'vps','cdn','aws','gcp','node','php','ruby','java','go','rust',
+'react','vue','next','nuxt','vite','cli','gui','sdk','env','src',
+'bin','lib','tmp','cache','proxy','token','jwt','oauth','hash','key',
+'debug','deploy','commit','merge','branch','docker','linux','bash','term','vim',
+'http','https','cors','dns','ssl','tcp','udp','ftp','smtp','imap',
+'redis','mongo','nginx','cloud','azure','k8s','helm','yaml','xml','regex',
+'queue','stack','heap','async','await','loop','map','filter','reduce','query'
+'trix','lumo','fyno','jivo','qilo','sovo','drio','gixo','mova','nava',
+'rivo','tevo','vixo','zimo','argo','brin','clio','drix','elio','faro',
+'grio','hivo','invo','juno','krio','livo','myro','nivo','ovio','puro',
+'quro','sivo','tulo','uvio','vano','wrio','xeno','yivo','zilo','adro',
+'brox','civo','davo','erro','fivo','givo','hiro','ivox','jaro','kavo',
+'liro','mivo','nuro','ovox','pavo','qivo','ruxo','saro','tivo','ulvo',
+'vivo','wavo','xivo','yuro','zavo','bivo','cavo','divo','evox','favo',
+'guro','hivo','jivo','kivo','lavo','muro','nivo','orvo','pivo','quvo',
+'rivo','suvo','turo','uvvo','vavo','wivo','xuvo','yavo','zuvo','abro',
+'brio','curo','davo','elvo','firo','gavo','huro','ijvo','kuro','livo',
+'mavo','nuro','opvo','quro','rivo','suvo','tavo','uvro','vavo','wuro',
+'xivo','yavo','zuro','acro','broo','civo','drio','eloo','frio','groo',
+'hivo','ikoo','juro','kivo','lrio','mooo','nivo','opoo','qiro','rooo',
+'sivo','troo','uvio','vooo','wiro','xivo','yroo','zivo','aboo','bivo',
+'cooo','diro','elvo','firo','gloo','hivo','ijoo','kivo','lvoo','mivo',
+'nooo','opvo','qivo','rovo','sloo','tivo','uvoo','viro','wooo','xivo',
+'yivo','zooo','abro','brio','croo','diro','elro','firo','groo','hiro',
+'ijro','kroo','livo','mroo','nivo','opro','qiro','rroo','sivo','troo',
+'uvro','vroo','wiro','xroo','yroo','zroo','abro','biro','croo','diro',
+'eiro','firo','groo','hiro','iroo','jiro','kroo','liro','mroo','niro',
+'opro','qiro','rroo','siro','troo','uvro','viro','wroo','xiro','yroo',
+'ziro','abra','brax','crax','drax','erax','frax','grax','hrax','irax',
+'jrax','krax','lrax','mrax','nrax','orax','prax','qrax','rrax','srax',
+'trax','urax','vrax','wrax','xrax','yrax','zrax','abex','bexo','cexu',
+'dexo','erex','fexo','gexu','hexo','irex','jexo','kexu','lexo','mrex',
+'nexu','orex','pexo','qexu','rexu','sexo','texu','urex','vexo','wexu',
+'xexo','yexu','zexo','abix','bixo','cixo','dixo','erix','fixo','gixo',
+'hixo','irix','jixo','kixo','lixo','mixu','nixo','orix','pixo','qixo',
+'rixo','sixo','tixo','urix','vixo','wixo','xixo','yixo','zixo','abox',
+'boxo','coxu','doxo','erox','foxo','goxu','hoxo','irox','joxo','koxu',
+'loxo','moxo','noxo','orox','poxo','qoxu','roxo','soxo','toxo','urox',
+'voxo','woxu','xoxo','yoxu','zoxo','abux','buxo','cuxo','duxo','erux',
+'fuxo','guxo','huxo','irux','juxo','kuxo','luxo','muxo','nuxo','orux',
+'puxo','quxo','ruxo','suxo','tuxo','urux','vuxo','wuxo','xuxo','yuxo',
+'zuxo','abzy','bazy','cazy','dazy','erzy','fazy','gazy','hazy','irzy',
+'jazy','kazy','lazy','mazy','nazy','orzy','pazy','qazy','razy','sazy',
+'tazy','urzy','vazy','wazy','xazy','yazy','zazy','abko','bako','cako',
+'dako','erko','fako','gako','hako','irko','jako','kako','lako','mako',
+'nako','orko','pako','qako','rako','sako','tako','urko','vako','wako',
+'xako','yako','zako','abmi','bami','cami','dami','ermi','fami','gami',
+'hami','irmi','jami','kami','lami','mami','nami','ormi','pami','qami',
+'rami','sami','tami','urmi','vami','wami','xami','yami','zami','abnu',
+'banu','canu','danu','ernu','fanu','ganu','hanu','irnu','janu','kanu',
+'lanu','manu','nanu','ornu','panu','qanu','ranu','sanu','tanu','urnu',
+'vanu','wanu','xanu','yanu','zanu','abpi','bapi','capi','dapi','erpi',
+'fapi','gapi','hapi','irpi','japi','kapi','lapi','mapi','napi','orpi',
+'papi','qapi','rapi','sapi','tapi','urpi','vapi','wapi','xapi','yapi',
+'zapi','abqi','baqi','caqi','daqi','erqi','faqi','gaqi','haqi','irqi',
+'jaqi','kaqi','laqi','maqi','naqi','orqi','paqi','qaqi','raqi','saqi',
+'taqi','urqi','vaqi','waqi','xaqi','yaqi','zaqi','abri','bari','cari',
+'dari','erri','fari','gari','hari','irri','jari','kari','lari','mari',
+'nari','orri','pari','qari','rari','sari','tari','urri','vari','wari',
+'xari','yari','zari','absi','basi','casi','dasi','ersi','fasi','gasi',
+'hasi','irsi','jasi','kasi','lasi','masi','nasi','orsi','pasi','qasi',
+'rasi','sasi','tasi','ursi','vasi','wasi','xasi','yasi','zasi','abti',
+'bati','cati','dati','erti','fati','gati','hati','irti','jati','kati',
+'lati','mati','nati','orti','pati','qati','rati','sati','tati','urti',
+'vati','wati','xati','yati','zati','abvi','bavi','cavi','davi','ervi',
+'favi','gavi','havi','irvi','javi','kavi','lavi','mavi','navi','orvi',
+'pavi','qavi','ravi','savi','tavi','urvi','vavi','wavi','xavi','yavi',
+'zavi','abxi','baxi','caxi','daxi','erxi','faxi','gaxi','haxi','irxi',
+'jaxi','kaxi','laxi','maxi','naxi','orxi','paxi','qaxi','raxi','saxi',
+'taxi','urxi','vaxi','waxi','xaxi','yaxi','zaxi','abyi','bayi','cayi',
+'dayi','eryi','fayi','gayi','hayi','iryi','jayi','kayi','layi','mayi',
+'nayi','oryi','payi','qayi','rayi','sayi','tayi','uryi','vayi','wayi',
+'xayi','yayi','zayi','abzi','bazi','cazi','dazi','erzi','fazi','gazi',
+'hazi','irzi','jazi','kazi','lazi','mazi','nazi','orzi','pazi','qazi',
+'razi','sazi','tazi','urzi','vazi','wazi','xazi','yazi','zazi'
+'acbo','bcbo','ccbo','dcbo','ecbo','fcbo','gcbo','hcbo','icbo','jcbo',
+'kcbo','lcbo','mcbo','ncbo','ocbo','pcbo','qcbo','rcbo','scbo','tcbo',
+'ucbo','vcbo','wcbo','xcbo','ycbo','zcbo','adbo','bdbo','cdbo','ddbo',
+'edbo','fdbo','gdbo','hdbo','idbo','jdbo','kdbo','ldbo','mdbo','ndbo',
+'odbo','pdbo','qdbo','rdbo','sdbo','tdbo','udbo','vdbo','wdbo','xdbo',
+'ydbo','zdbo','aebo','bebo','cebo','debo','eebo','febo','gebo','hebo',
+'iebo','jebo','kebo','lebo','mebo','nebo','oebo','pebo','qebo','rebo',
+'sebo','tebo','uebo','vebo','webo','xebo','yebo','zebo','afbo','bfbo',
+'cfbo','dfbo','efbo','ffbo','gfbo','hfbo','ifbo','jfbo','kfbo','lfbo',
+'mfbo','nfbo','ofbo','pfbo','qfbo','rfbo','sfbo','tfbo','ufbo','vfbo',
+'wfbo','xfbo','yfbo','zfbo','agbo','bgbo','cgbo','dgbo','egbo','fgbo',
+'ggbo','hgbo','igbo','jgbo','kgbo','lgbo','mgbo','ngbo','ogbo','pgbo',
+'qgbo','rgbo','sgbo','tgbo','ugbo','vgbo','wgbo','xgbo','ygbo','zgbo',
+'ahbo','bhbo','chbo','dhbo','ehbo','fhbo','ghbo','hhbo','ihbo','jhbo',
+'khbo','lhbo','mhbo','nhbo','ohbo','phbo','qhbo','rhbo','shbo','thbo',
+'uhbo','vhbo','whbo','xhbo','yhbo','zhbo','aibo','bibo','cibo','dibo',
+'eibo','fibo','gibo','hibo','iibo','jibo','kibo','libo','mibo','nibo',
+'oibo','pibo','qibo','ribo','sibo','tibo','uibo','vibo','wibo','xibo',
+'yibo','zibo','ajbo','bjbo','cjbo','djbo','ejbo','fjbo','gjbo','hjbo',
+'ijbo','jjbo','kjbo','ljbo','mjbo','njbo','ojbo','pjbo','qjbo','rjbo',
+'sjbo','tjbo','ujbo','vjbo','wjbo','xjbo','yjbo','zjbo','akbo','bkbo',
+'ckbo','dkbo','ekbo','fkbo','gkbo','hkbo','ikbo','jkbo','kkbo','lkbo',
+'mkbo','nkbo','okbo','pkbo','qkbo','rkbo','skbo','tkbo','ukbo','vkbo',
+'wkbo','xkbo','ykbo','zkbo','albo','blbo','clbo','dlbo','elbo','flbo',
+'glbo','hlbo','ilbo','jlbo','klbo','llbo','mlbo','nlbo','olbo','plbo',
+'qlbo','rlbo','slbo','tlbo','ulbo','vlbo','wlbo','xlbo','ylbo','zlbo',
+'ambo','bmbo','cmbo','dmbo','embo','fmbo','gmbo','hmbo','imbo','jmbo',
+'kmbo','lmbo','mmbo','nmbo','ombo','pmbo','qmbo','rmbo','smbo','tmbo',
+'umbo','vmbo','wmbo','xmbo','ymbo','zmbo','anbo','bnbo','cnbo','dnbo',
+'enbo','fnbo','gnbo','hnbo','inbo','jnbo','knbo','lnbo','mnbo','nnbo',
+'onbo','pnbo','qnbo','rnbo','snbo','tnbo','unbo','vnbo','wnbo','xnbo',
+'ynbo','znbo','aobo','bobo','cobo','dobo','eobo','fobo','gobo','hobo',
+'iobo','jobo','kobo','lobo','mobo','nobo','oobo','pobo','qobo','robo',
+'sobo','tobo','uobo','vobo','wobo','xobo','yobo','zobo','apbo','bpbo',
+'cpbo','dpbo','epbo','fpbo','gpbo','hpbo','ipbo','jpbo','kpbo','lpbo',
+'mpbo','npbo','opbo','ppbo','qpbo','rpbo','spbo','tpbo','upbo','vpbo',
+'wpbo','xpbo','ypbo','zpbo','aqbo','bqbo','cqbo','dqbo','eqbo','fqbo',
+'gqbo','hqbo','iqbo','jqbo','kqbo','lqbo','mqbo','nqbo','oqbo','pqbo',
+'qqbo','rqbo','sqbo','tqbo','uqbo','vqbo','wqbo','xqbo','yqbo','zqbo',
+'arbo','brbo','crbo','drbo','erbo','frbo','grbo','hrbo','irbo','jrbo',
+'krbo','lrbo','mrbo','nrbo','orbo','prbo','qrbo','rrbo','srbo','trbo',
+'urbo','vrbo','wrbo','xrbo','yrbo','zrbo','asbo','bsbo','csbo','dsbo',
+'esbo','fsbo','gsbo','hsbo','isbo','jsbo','ksbo','lsbo','msbo','nsbo',
+'osbo','psbo','qsbo','rsbo','ssbo','tsbo','usbo','vsbo','wsbo','xsbo',
+'ysbo','zsbo','atbo','btbo','ctbo','dtbo','etbo','ftbo','gtbo','htbo',
+'itbo','jtbo','ktbo','ltbo','mtbo','ntbo','otbo','ptbo','qtbo','rtbo',
+'stbo','ttbo','utbo','vtbo','wtbo','xtbo','ytbo','ztbo','aubo','bubo',
+'cubo','dubo','eubo','fubo','gubo','hubo','iubo','jubo','kubo','lubo',
+'mubo','nubo','oubo','pubo','qubo','rubo','subo','tubo','uubo','vubo',
+'wubo','xubo','yubo','zubo','avbo','bvbo','cvbo','dvbo','evbo','fvbo',
+'gvbo','hvbo','ivbo','jvbo','kvbo','lvbo','mvbo','nvbo','ovbo','pvbo',
+'qvbo','rvbo','svbo','tvbo','uvbo','vvbo','wvbo','xvbo','yvbo','zvbo',
+'awbo','bwbo','cwbo','dwbo','ewbo','fwbo','gwbo','hwbo','iwbo','jwbo',
+'kwbo','lwbo','mwbo','nwbo','owbo','pwbo','qwbo','rwbo','swbo','twbo',
+'uwbo','vwbo','wwbo','xwbo','ywbo','zwbo','axbo','bxbo','cxbo','dxbo',
+'exbo','fxbo','gxbo','hxbo','ixbo','jxbo','kxbo','lxbo','mxbo','nxbo',
+'oxbo','pxbo','qxbo','rxbo','sxbo','txbo','uxbo','vxbo','wxbo','xxbo',
+'yxbo','zxbo','aybo','bybo','cybo','dybo','eybo','fybo','gybo','hybo',
+'iybo','jybo','kybo','lybo','mybo','nybo','oybo','pybo','qybo','rybo',
+'sybo','tybo','uybo','vybo','wybo','xybo','yybo','zybo','azbo','bzbo',
+'czbo','dzbo','ezbo','fzbo','gzbo','hzbo','izbo','jzbo','kzbo','lzbo',
+'mzbo','nzbo','ozbo','pzbo','qzbo','rzbo','szbo','tzbo','uzbo','vzbo',
+'wzbo','xzbo','yzbo','zzbo','titan','giant','vast','huge','one','zero',
+'bit','firm','soft','hard','sys','ops','run','bin','exe','cpu','gpu',
+'ram','rom','sdk','cli','gui','db','sql','json','xml','tivo','ryze',
+'quik','prix','mizo','loom','glim','flux','orbi','zyro','vibe','zest',
+'teach','learn','know','find','seek','spot','lens','view','scope','aim',
+'focus','guide','plan','think','mind','wit','acute','keen','wise','sly',
+'raven','crow','bat','cat','owl','loop','ring','path','road','lane',
+'way','pace','roll','spin','push','drive','track','arrow','rocket',
+'flash','drift','glide','skip','jump','warp','speed','race','move',
+'go','snap','swift','fly','jet','bolt','run','dash','zoom','rush',
+'quick','fast','wave','pulse','shift','build','frame','chain','token',
+'logic','spark','pixel','volt','cyber','nexo','nova','cloud','flow',
+'stack','lab','io','ai','ux','git','dev','api','hub','net','web','app',
+'chip','grid','link','sync','node','data','code','byte','class','rich',
+'lux','bright','smart','crisp','diamond','platinum','silver','gold',
+'vip','pro','high','more','plus','extra','ultra','super','fine','sharp',
+'clear','clean','solid','real','true','pure','great','best','good','mega',
+'main','front','lead','first','elite','prime','brave','bold','strong',
+'power','force','myth','legend','hero','boss','chief','lord','king',
+'top','peak','root','base','core','rock','stone','steel','iron','apex',
+'alpha','bull','cobra','falcon','shark','lynx','tiger','bear','hawk',
+'wolf','lion'
+'aero','atom','beam','blip','boom','burn','buzz','cave','chill','clap',
+'click','clip','coin','cool','crack','crew','cube','curl','dawn','deck',
+'deep','demo','dock','door','draw','drop','dual','dust','echo','edge',
+'edit','emit','enum','exit','fame','farm','fate','feed','fend','film',
+'fire','fish','flat','flip','foam','fold','font','food','foot','form',
+'free','fuel','full','gain','game','gate','gear','germ','glow','glue',
+'goal','grab','gray','gulf','hair','hall','hand','hang','hard','haze',
+'head','heat','heel','hide','hill','hint','hire','hold','hole','home',
+'hook','hope','horn','host','hour','hunt','icon','idea','item','join',
+'jump','junk','keep','kick','kill','kind','kiss','kite','land','last',
+'lazy','lift','light','line','list','live','load','lock','long','look',
+'loop','loud','love','luck','lush','main','make','mark','mask','mass',
+'mate','mean','meet','menu','meta','mint','miss','mist','mode','moon',
+'more','moss','most','move','much','must','name','navy','near','neat',
+'need','nest','news','next','nice','nine','node','none','nose','note',
+'noun','nova','now','null','open','over','pack','page','pair','palm',
+'park','part','pass','past','path','peak','pen','pink','plan','play',
+'plot','plug','plus','pole','poll','pond','pool','port','post','pour',
+'prep','prod','pull','pump','push','quit','rain','rank','rate','read',
+'real','rear','redo','rest','rice','rich','ride','ring','risk','road',
+'rock','role','room','root','rope','rose','rule','run','rush','safe',
+'sail','salt','same','sand','save','scan','scar','seal','seat','seed',
+'sell','send','sexy','ship','shop','shot','show','side','sign','silk',
+'sing','sink','site','size','skin','skip','slim','slip','slow','snap',
+'snow','soft','soil','sold','sole','song','sort','soul','soup','star',
+'stay','step','stop','suit','sum','sure','swim','take','talk','tall',
+'task','team','tear','tell','term','test','text','thin','time','tiny',
+'tire','tone','tool','top','tour','town','track','trade','tree','trim',
+'trip','true','tube','turn','type','unit','up','user','vast','verb',
+'very','view','visa','vote','wake','walk','wall','want','warm','wash',
+'wave','wear','week','well','west','wide','win','wind','wire','wise',
+'wish','with','wolf','wood','word','work','yard','year','yes','yet',
+'yoga','zero','zone','zoom','zulu','acto','brio','cero','dito','expo',
+'fato','giga','hero','info','jato','kilo','lobo','modo','nano','orbe',
+'primo','quero','rito','soma','tato','urso','vito','xato','yoga','zelo',
+'blaz','crom','drim','evox','fron','grom','hyte','ivon','jex','kron',
+'lyra','mythos','nyx','orion','pyro','quanta','ryft','stark','tyro',
+'umbra','vex','wyld','xeno','yara','zory','aion','bryo','cerox','dyne',
+'elyt','fyne','gyre','hyve','ixor','jynx','kyro','lyft','myte','nyra',
+'oxyn','pyte','quor','ryse','sylo','tyne','uvyr','vyne','wyro','xylo',
+'yxir','zyno','abyr','bryn','cyra','dyro','exyr','fynx','gylo','hyra',
+'ixyl','jyro','kyra','lyno','myra','nyxo','orly','pyra','qynx','rylo',
+'syro','tyra','uxyr','vyra','wyxo','xyra','ylyn','zryx','aexo','bexo',
+'cex','dex','exo','fex','gex','hex','iex','jexo','kex','lex','mex',
+'nex','oex','pex','qex','rex','sex','tex','uex','vexo','wex','xex',
+'yex','zex','abyn','blyn','cryn','dryn','eryn','fryn','gryn','hryn',
+'iryn','jryn','kryn','lryn','mryn','nryn','oryn','pryn','qryn','rynx',
+'sryn','tryn','uryn','vryn','wryn','xryn','yryn','zryn','avox','bvox',
+'cvox','dvox','evox','fvox','gvox','hvox','ivox','jvox','kvox','lvox',
+'mvox','nvox','ovox','pvox','qvox','rvox','svox','tvox','uvox','vvox',
+'wvox','xvox','yvox','zvox','azen','beon','ceon','deon','eon','feon',
+'geon','heon','ion','jeon','keon','leon','meon','neon','oeon','peon',
+'qion','reon','seon','teon','ueon','veon','weon','xeon','yeon','zeon',
+'aery','bery','cery','dery','ery','fery','gery','hery','iery','jery',
+'kery','lery','mery','nery','oery','pery','qery','rery','sery','tery',
+'uery','very','wery','xery','yery','zery','alyn','blyn','clyn','dlyn',
+'elyn','flyn','glyn','hlyn','ilyn','jlyn','klyn','llyn','mlyn','nlyn',
+'olyn','plyn','qlyn','rlyn','slyn','tlyn','ulyn','vlyn','wlyn','xlyn',
+'ylyn','zlyn','axyr','bxyr','cxyr','dxyr','exyr','fxyr','gxyr','hxyr',
+'ixyr','jxyr','kxyr','lxyr','mxyr','nxyr','oxyr','pxyr','qxyr','rxyr',
+'sxyr','txyr','uxyr','vxyr','wxyr','xxyr','yxyr','zxyr','aqon','bqon',
+'cqon','dqon','eqon','fqon','gqon','hqon','iqon','jqon','kqon','lqon',
+'mqon','nqon','oqon','pqon','qqon','rqon','sqon','tqon','uqon','vqon',
+'wqon','xqon','yqon','zqon','arox','brox','crox','drox','erox','frox',
+'grox','hrox','irox','jrox','krox','lrox','mrox','nrox','orox','prox',
+'qrox','rrox','srox','trox','urox','vrox','wrox','xrox','yrox','zrox',
+'asyn','bsyn','csyn','dsyn','esyn','fsyn','gsyn','hsyn','isyn','jsyn',
+'ksyn','lsyn','msyn','nsyn','osyn','psyn','qsyn','rsyn','ssyn','tsyn',
+'usyn','vsyn','wsyn','xsyn','ysyn','zsyn','atyr','btyr','ctyr','dtyr',
+'etyr','ftyr','gtyr','htyr','ityr','jtyr','ktyr','ltyr','mtyr','ntyr',
+'otyr','ptyr','qtyr','rtyr','styr','ttyr','utyr','vtyr','wtyr','xtyr',
+'ytyr','ztyr','auvo','buvo','cuvo','duvo','euvo','fuvo','guvo','huvo',
+'iuvo','juvo','kuvo','luvo','muvo','nuvo','ouvo','puvo','quvo','ruvo',
+'suvo','tuvo','uuvо','vuvo','wuvo','xuvo','yuvo','zuvo','avyr','bvyr',
+'cvyr','dvyr','evyr','fvyr','gvyr','hvyr','ivyr','jvyr','kvyr','lvyr',
+'mvyr','nvyr','ovyr','pvyr','qvyr','rvyr','svyr','tvyr','uvyr','vvyr',
+'wvyr','xvyr','yvyr','zvyr','awyr','bwyr','cwyr','dwyr','ewyr','fwyr',
+'gwyr','hwyr','iwyr','jwyr','kwyr','lwyr','mwyr','nwyr','owyr','pwyr',
+'qwyr','rwyr','swyr','twyr','uwyr','vwyr','wwyr','xwyr','ywyr','zwyr',
+'axyr','bxyr'
+];
+
+let generatedEmails = [];
+
+document.getElementById('email').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') document.getElementById('number').focus();
+});
+
+document.getElementById('number').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') generate();
+});
+
+function generate() {
+    const email = document.getElementById('email').value.trim();
+    const number = parseInt(document.getElementById('number').value);
+    const out = document.getElementById('output');
+    
+    if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/.test(email)) {
+        out.innerHTML = '<div class="email-row">[!] Invalid email address</div>';
+        document.getElementById('outputCard').classList.remove('hidden');
+        return;
+    }
+    
+    if (!number || number < 1) {
+        out.innerHTML = '<div class="email-row">[!] Invalid amount</div>';
+        document.getElementById('outputCard').classList.remove('hidden');
+        return;
+    }
+    
+    const [name, domain] = email.split('@');
+    let finalAlias = ALIAS_LIST.sort(() => Math.random() - 0.5).slice(0, Math.min(number, ALIAS_LIST.length));
+    generatedEmails = finalAlias.map(a => `${name}+${a}@${domain}`);
+    
+    out.innerHTML = '';
+    generatedEmails.forEach((mail, i) => {
+        const row = document.createElement('div');
+        row.className = 'email-row';
+        row.innerHTML = `
+            <span>${mail}</span>
+            <button class="copy-btn" onclick="copySingle(${i}, this)">COPY</button>
+        `;
+        out.appendChild(row);
+    });
+    
+    document.getElementById('count').innerText = generatedEmails.length;
+    document.getElementById('outputCard').classList.remove('hidden');
+    document.getElementById('copyAllBtn').classList.remove('hidden');
+}
+
+function copySingle(index, btn) {
+    navigator.clipboard.writeText(generatedEmails[index]).then(() => {
+        const old = btn.innerText;
+        btn.innerText = 'COPIED';
+        setTimeout(() => btn.innerText = old, 1000);
+    });
+}
+
+function copyAll() {
+    navigator.clipboard.writeText(generatedEmails.join('\n')).then(() => {
+        const btn = document.getElementById('copyAllBtn');
+        btn.innerText = 'ALL COPIED!';
+        setTimeout(() => btn.innerText = 'COPY ALL', 1500);
+    });
+}
+</script>
+
+</body>
+</html>
